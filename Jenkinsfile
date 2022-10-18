@@ -20,8 +20,6 @@ podTemplate(label: 'gopod', cloud: 'kubernetes', serviceAccount: 'jenkins',
             // Set up private key to access BitBucket
             sh "cat /etc/.ssh/id_rsa > ~/.ssh/id_rsa"
             sh "chmod 400 ~/.ssh/id_rsa"
-            sh "sed 's/__VERSION__/${version}.${env.BUILD_NUMBER}/g' internal/adapters/left/version/handler.go > internal/adapters/left/version/handler.go.tmp"
-            sh "mv internal/adapters/left/version/handler.go.tmp internal/adapters/left/version/handler.go"
   		}
 
 		container('buildkit') {
@@ -36,6 +34,10 @@ podTemplate(label: 'gopod', cloud: 'kubernetes', serviceAccount: 'jenkins',
 
 						./install.sh
 						mv bin/grype /usr/local/bin/
+
+						sed 's/__VERSION__/${version}.${env.BUILD_NUMBER}/g' internal/adapters/left/version/handler.go > internal/adapters/left/version/handler.go.tmp
+						mv internal/adapters/left/version/handler.go.tmp internal/adapters/left/version/handler.go
+
 						buildctl build --frontend dockerfile.v0 --local context=. --local dockerfile=. --export-cache type=local,dest=/tmp/buildkit/cache --output type=oci,dest=/tmp/image.tar --opt network=host --opt build-arg:VERSION=${version}.${env.BUILD_NUMBER}
 					"""
 				} catch (error) {
