@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: customer
-          image: ikolomiyets/demo-service:_VERSION_
+          image: iktech/demo-service:_VERSION_
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
